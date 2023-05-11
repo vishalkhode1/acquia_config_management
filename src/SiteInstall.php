@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\acquia_cms_config_management;
+namespace Drupal\acquia_config_management;
 
 /**
  * The service to determine if site is getting installed.

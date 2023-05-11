@@ -1,9 +1,11 @@
 <?php
 
-namespace Drupal\acquia_cms_config_management\Event;
+namespace Drupal\acquia_config_management\Event;
 
 use Consolidation\AnnotatedCommand\CommandData;
+use Consolidation\AnnotatedCommand\CommandResult;
 use Drupal\Component\EventDispatcher\Event;
+use Drush\Commands\acquia_global_commands\ConfigImportExportCommands;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -30,7 +32,7 @@ class ConfigEvents extends Event {
   /**
    * Holds the command result data.
    *
-   * @var array|null
+   * @var \Consolidation\AnnotatedCommand\CommandResult|array|null
    */
   protected $result;
 
@@ -42,16 +44,29 @@ class ConfigEvents extends Event {
   protected $commandData;
 
   /**
+   * Holds the object of ConfigImportExportCommands.
+   *
+   * @var \Drush\Commands\acquia_global_commands\ConfigImportExportCommands|null
+   */
+  public $acquiaGlobalCommand;
+
+  /**
    * Constructs the object.
    *
-   * @param array|null $result
+   * @param \Consolidation\AnnotatedCommand\CommandResult|array|null $result
    *   The result array or null.
-   * @param \Consolidation\AnnotatedCommand\CommandData|null $commandData
+   * @param \Consolidation\AnnotatedCommand\CommandData|null $command_data
    *   The command data object.
+   * @param \Drush\Commands\acquia_global_commands\ConfigImportExportCommands|null $acquia_global_command
+   *   The config import export command.
    */
-  public function __construct(?array $result = [], ?CommandData $commandData = NULL) {
+  public function __construct(
+    $result = NULL,
+    ?CommandData $command_data = NULL,
+    ?ConfigImportExportCommands $acquia_global_command = NULL) {
     $this->result = $result;
-    $this->commandData = $commandData;
+    $this->commandData = $command_data;
+    $this->acquiaGlobalCommand = $acquia_global_command;
   }
 
   /**
@@ -71,7 +86,7 @@ class ConfigEvents extends Event {
   /**
    * Returns the command result.
    */
-  public function getResult(): ?array {
+  public function getResult(): CommandResult|array|null {
     return $this->result;
   }
 

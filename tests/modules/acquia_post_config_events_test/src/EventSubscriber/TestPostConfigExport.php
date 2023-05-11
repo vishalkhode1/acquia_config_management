@@ -1,17 +1,19 @@
 <?php
 
-namespace Drupal\acquia_config_management\EventSubscriber;
+namespace Drupal\acquia_post_config_events_test\EventSubscriber;
 
-use Acquia\DrupalEnvironmentDetector\AcquiaDrupalEnvironmentDetector;
 use Drupal\acquia_config_management\Event\ConfigEvents;
+use Drupal\acquia_post_config_events_test\Traits\ConfigEventLogTrait;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * The post configuration export event subscriber.
+ * Class EntityTypeSubscriber.
  *
  * @package Drupal\acquia_config_management\EventSubscriber
  */
-class AcquiaPostConfigExport implements EventSubscriberInterface {
+class TestPostConfigExport implements EventSubscriberInterface {
+
+  use ConfigEventLogTrait;
 
   /**
    * {@inheritdoc}
@@ -21,20 +23,18 @@ class AcquiaPostConfigExport implements EventSubscriberInterface {
    */
   public static function getSubscribedEvents() {
     return [
-      ConfigEvents::POST_CONFIG_EXPORT => ['postConfigExport', 100],
+      ConfigEvents::POST_CONFIG_EXPORT => 'postConfigExport',
     ];
   }
 
   /**
-   * React to after configurations are exported.
+   * React to a config object being saved.
    *
    * @param \Drupal\acquia_config_management\Event\ConfigEvents $event
    *   Config crud event.
    */
   public function postConfigExport(ConfigEvents $event) {
-    if (!AcquiaDrupalEnvironmentDetector::isAhIdeEnv() && AcquiaDrupalEnvironmentDetector::isAhEnv()) {
-      $event->stopPropagation();
-    }
+    $this->log('export', __METHOD__);
   }
 
 }
